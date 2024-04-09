@@ -1,4 +1,4 @@
-# TTN Application
+# Ứng dụng Thi trắc nghiệm
 
 Một ứng dụng để sinh viên có thể đăng nhập và thi trắc nghiệm.
 
