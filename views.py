@@ -1,10 +1,14 @@
+import os
+
 import tkinter as tk
 from tkinter import messagebox
 from customtkinter import *
 from ttkbootstrap.tableview import Tableview
+from PIL import Image
 
 WIDTH = 1200
 HEIGHT = 675
+curr_dir = os.path.dirname(os.path.abspath(__file__))
 
 def show_message(title: str, mess: str):
         messagebox.showerror(title, mess)
@@ -160,7 +164,8 @@ class CoSoView:
         self.header_tab = CTkTabview(self.window, anchor="nw", corner_radius=0,
                               fg_color="#dff5ff", segmented_button_selected_color="white",
                               text_color="black", segmented_button_fg_color="#a3a3a3",
-                              segmented_button_selected_hover_color="#d9d9d9")
+                              segmented_button_selected_hover_color="#dff5ff",
+                              segmented_button_unselected_color="#dff5ff")
         self.header_tab.place(relx=0.0, rely=0.05, relheight=1, relwidth=1)
         self.header_tab.add("Khoa")
         self.header_tab.add("Giảng viên")
@@ -168,6 +173,23 @@ class CoSoView:
         self.header_tab.add("Sinh viên")
         self.header_tab.add("Môn học")
         self.header_tab.add("Bộ đề")
+
+
+        # Icon Image
+        add_path = os.path.join(curr_dir, "icons", "add.png")
+        add_img = CTkImage(light_image=Image.open(add_path))
+
+        del_path = os.path.join(curr_dir, "icons", "bin.png")
+        del_img = CTkImage(light_image=Image.open(del_path))
+
+        rel_path = os.path.join(curr_dir, "icons", "reload.png")
+        rel_img = CTkImage(light_image=Image.open(rel_path))
+
+        save_path = os.path.join(curr_dir, "icons", "save.png")
+        save_img = CTkImage(light_image=Image.open(save_path))
+
+        undo_path = os.path.join(curr_dir, "icons", "undo.png")
+        undo_img = CTkImage(light_image=Image.open(undo_path))
 
 
         # Phần Khoa
@@ -292,11 +314,11 @@ class CoSoView:
         self.mon_button_frame.pack(expand=True, fill="both")
         self.mon_entry_frame.pack(expand=True, fill="both")
 
-        self.mon_add_button = CTkButton(self.mon_button_frame, text="Thêm", width=100)
-        self.mon_del_button = CTkButton(self.mon_button_frame, text="Xóa", width=100)
-        self.mon_save_button = CTkButton(self.mon_button_frame, text="Ghi", width=100)
-        self.mon_reload_button = CTkButton(self.mon_button_frame, text="Tải lại", width=100)
-        self.mon_undo_button = CTkButton(self.mon_button_frame, text="Phục hồi", width=100)
+        self.mon_add_button = CTkButton(self.mon_button_frame, text="Thêm", width=100, image=add_img)
+        self.mon_del_button = CTkButton(self.mon_button_frame, text="Xóa", width=100, image=del_img)
+        self.mon_save_button = CTkButton(self.mon_button_frame, text="Ghi", width=100, image=save_img)
+        self.mon_reload_button = CTkButton(self.mon_button_frame, text="Tải lại", width=100, image=rel_img)
+        self.mon_undo_button = CTkButton(self.mon_button_frame, text="Phục hồi", width=100,image=undo_img)
 
         self.mon_add_button.pack(side="left", expand=True, pady=10)
         self.mon_del_button.pack(side="left", expand=True, pady=10)
@@ -320,25 +342,8 @@ class CoSoView:
         self.mon_main_frame.grid_rowconfigure(0, weight=1)
         self.mon_main_frame.grid_columnconfigure(0, weight=1)
 
-        # mon_heading = [
-        #     {"text": "Mã môn học", "stretch": True},
-        #     {"text": "Tên môn học", "stretch": True},
-        # ]
 
-        # mon_row = []
-        # for row in mon_data:
-        #     mon_row.append((row[0], row[1]))
-
-        # self.mon_table = Tableview(
-        #     master=self.mon_main_frame,
-        #     coldata=mon_heading,
-        #     rowdata=mon_row,
-        #     paginated=True,
-        #     searchable=True,
-        #     pagesize=15,
-        # )
-        # self.mon_table.grid(row=0, column=0, sticky="nsew")
-
+        # Tạo bảng môn học
         self.mon_table = self.draw_mon_table(mon_data)
 
         self.mon_table.view.bind("<ButtonRelease-1>", self.set_mon_entry)
