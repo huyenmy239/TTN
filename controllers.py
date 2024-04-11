@@ -129,12 +129,10 @@ class CoSoController:
         try:
             self.cur.execute(sp)
             self.con.commit()
-            # self.view.mon_table.insert_row(END, [mamon, tenmon])
-            self.view.mon_table.delete_rows()
-            self.view.mon_table.insert_rows(0, self.load_mon())
-            self.view.window.update()
         except pyodbc.Error as e:
             show_message("Lỗi", e.args[1])
+
+        self.view.draw_mon_table(self.load_mon())
         
 
     def load_khoa(self):

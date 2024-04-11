@@ -320,24 +320,26 @@ class CoSoView:
         self.mon_main_frame.grid_rowconfigure(0, weight=1)
         self.mon_main_frame.grid_columnconfigure(0, weight=1)
 
-        mon_heading = [
-            {"text": "Mã môn học", "stretch": True},
-            {"text": "Tên môn học", "stretch": True},
-        ]
+        # mon_heading = [
+        #     {"text": "Mã môn học", "stretch": True},
+        #     {"text": "Tên môn học", "stretch": True},
+        # ]
 
-        mon_row = []
-        for row in mon_data:
-            mon_row.append((row[0], row[1]))
+        # mon_row = []
+        # for row in mon_data:
+        #     mon_row.append((row[0], row[1]))
 
-        self.mon_table = Tableview(
-            master=self.mon_main_frame,
-            coldata=mon_heading,
-            rowdata=mon_row,
-            paginated=True,
-            searchable=True,
-            pagesize=15,
-        )
-        self.mon_table.grid(row=0, column=0, sticky="nsew")
+        # self.mon_table = Tableview(
+        #     master=self.mon_main_frame,
+        #     coldata=mon_heading,
+        #     rowdata=mon_row,
+        #     paginated=True,
+        #     searchable=True,
+        #     pagesize=15,
+        # )
+        # self.mon_table.grid(row=0, column=0, sticky="nsew")
+
+        self.mon_table = self.draw_mon_table(mon_data)
 
         self.mon_table.view.bind("<ButtonRelease-1>", self.set_mon_entry)
 
@@ -386,6 +388,28 @@ class CoSoView:
         self.mon_mamon_entry.insert(0, values[0])
         self.mon_tenmon_entry.delete(0, END)
         self.mon_tenmon_entry.insert(0, values[1])
+
+    def draw_mon_table(self, mon_data):
+        mon_heading = [
+            {"text": "Mã môn học", "stretch": True},
+            {"text": "Tên môn học", "stretch": True},
+        ]
+
+        mon_row = []
+        for row in mon_data:
+            mon_row.append((row[0], row[1]))
+
+        mon_table = Tableview(
+            master=self.mon_main_frame,
+            coldata=mon_heading,
+            rowdata=mon_row,
+            paginated=True,
+            searchable=True,
+            pagesize=15,
+        )
+        mon_table.grid(row=0, column=0, sticky="nsew")
+
+        return mon_table
 
 
 class TruongView:
