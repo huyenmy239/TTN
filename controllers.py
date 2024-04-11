@@ -123,8 +123,14 @@ class CoSoController:
         self.view.mon_tenmon_entry.delete(0, END)
 
     def save_monhoc(self):
-        mamon = self.view.mon_mamon_entry.get().upper()
-        tenmon = self.view.mon_tenmon_entry.get().upper()
+        mamon = self.view.mon_mamon_entry.get().upper().strip()
+        tenmon = self.view.mon_tenmon_entry.get().upper().strip()
+
+        if mamon == "" or tenmon == "":
+            show_message("Lỗi", "Không được để trống mã môn hoặc tên môn.")
+            return
+
+
         sp = f"SP_ThemMonHoc '{mamon}', N'{tenmon}'"
         try:
             self.cur.execute(sp)
