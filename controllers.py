@@ -115,22 +115,31 @@ class CoSoController:
 
         self.view.mon_add_button.configure(command=self.add_monhoc)
         self.view.mon_save_button.configure(command=self.save_monhoc)
+        self.view.mon_reload_button.configure(command=self.reload_monhoc)
 
         self.view.window.mainloop()
 
+    def reload_monhoc(self):
+        self.view.mon_table = self.view.draw_mon_table(self.load_mon())
+
     def add_monhoc(self):
+        self.view.mon_mamon_entry.configure(state="normal")
         self.view.mon_mamon_entry.delete(0, END)
         self.view.mon_tenmon_entry.delete(0, END)
+        self.view.update_var = False
 
     def save_monhoc(self):
         mamon = self.view.mon_mamon_entry.get().upper().strip()
         tenmon = self.view.mon_tenmon_entry.get().upper().strip()
 
+        if self.view.update_var == True:
+            self.update_monhoc(self.view.selected_var.strip(), tenmon)
+            return
+
         if mamon == "" or tenmon == "":
             show_message("Lỗi", "Không được để trống mã môn hoặc tên môn.")
             return
-
-
+        
         sp = f"SP_ThemMonHoc '{mamon}', N'{tenmon}'"
         try:
             self.cur.execute(sp)
@@ -138,8 +147,21 @@ class CoSoController:
         except pyodbc.Error as e:
             show_message("Lỗi", e.args[1])
 
-        self.view.draw_mon_table(self.load_mon())
+        self.view.mon_table = self.view.draw_mon_table(self.load_mon())
+        # self.view = CoSoView(self.info, self.load_khoa(), self.load_giangvien(), self.load_lop(), self.load_sv(), self.load_mon(), self.load_bode())
         
+    def update_monhoc(self, mamon, tenmon):
+        sp = f"SP_ThayDoiTenMonHoc '{mamon}', N'{tenmon}'"
+        print(sp)
+        try:
+            self.cur.execute(sp)
+            self.con.commit()
+        except pyodbc.Error as e:
+            show_message("Lỗi", e.args[1])
+
+        self.view.update_var = False
+        self.view.mon_table = self.view.draw_mon_table(self.load_mon())
+
 
     def load_khoa(self):
         v_sql = f"SELECT * FROM KHOA"

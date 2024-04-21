@@ -148,6 +148,11 @@ class CoSoView:
     def __init__(self, info: list, khoa_data: list, gv_data: list, lop_data: list, sv_data: list, mon_data: list, bode_data: list):
         self.info = info
 
+        # Biến update
+        self.update_var = False
+        # Biến selected
+        self.selected_var = ""
+
         self.window = CTk()
         self.window.geometry(f"{WIDTH}x{HEIGHT}")
         self.window.title("Thi trắc nghiệm")
@@ -327,7 +332,8 @@ class CoSoView:
         self.mon_undo_button.pack(side="left", expand=True, pady=10)
 
         self.mon_mamon_entry = CTkEntry(self.mon_entry_frame, placeholder_text="Mã môn", height=35)
-        self.mon_tenmon_entry = CTkEntry(self.mon_entry_frame, placeholder_text="Tên môn", height=35)
+        # self.mon_mamon_entry.configure(state="readonly")
+        self.mon_tenmon_entry = CTkEntry(self.mon_entry_frame, placeholder_text="Tên môn", height=35, fg_color="white")
 
         self.mon_mamon_entry.pack(side="left", expand=True, fill="x", padx=30)
         self.mon_tenmon_entry.pack(side="left", expand=True, fill="x", padx=30)
@@ -383,16 +389,24 @@ class CoSoView:
         self.bode_table.grid(row=0, column=0, sticky="nsew")
 
     def get_selected_row(self, event):
+        # self.mon_mamon_entry.configure(state="normal")
+        self.update_var = True
         row = self.mon_table.get_rows(selected=True)
+        # self.mon_mamon_entry.configure(state="readonly")
         return row[0].values
 
     def set_mon_entry(self, event):
         values = self.get_selected_row(event)
 
+        # Thay đổi biến selected
+        self.selected_var = values[0]
+        
+        self.mon_mamon_entry.configure(state="normal")
         self.mon_mamon_entry.delete(0, END)
         self.mon_mamon_entry.insert(0, values[0])
         self.mon_tenmon_entry.delete(0, END)
         self.mon_tenmon_entry.insert(0, values[1])
+        self.mon_mamon_entry.configure(state="readonly")
 
     def draw_mon_table(self, mon_data):
         mon_heading = [
@@ -413,6 +427,8 @@ class CoSoView:
             pagesize=15,
         )
         mon_table.grid(row=0, column=0, sticky="nsew")
+
+        mon_table.view.bind("<ButtonRelease-1>", self.set_mon_entry)
 
         return mon_table
 
